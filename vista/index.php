@@ -24,11 +24,11 @@
   }
   p {font-size: 16px;}
   .margin {margin-bottom: 45px;}
-  .bg-1 { 
-    background-color: #81D4FA  ; 
+  .bg-1 {
+    background-color: #81D4FA  ;
     color: #ffffff;
   }
-  .bg-4 { 
+  .bg-4 {
     background-color: #F8F9F9; /* Black Gray */
     color: #000000  ;
   }
@@ -57,13 +57,13 @@
   <div class="container bg-white">
       <div class="row text-center h-100 bg-white d-flex justify-content-center align-items-center">
         <div class="col-lg-4">
-          <img src="img/logo1.png" width="300" height="auto">          
+          <img src="img/logo1.png" width="300" height="auto">
         </div>
         <div class="col-lg-4">
-          <img src="img/logo4.png" width="350" height="auto">          
+          <img src="img/logo4.png" width="350" height="auto">
         </div>
         <div class="col-lg-4">
-          <img src="img/logo3.png" width="80" height="auto">          
+          <img src="img/logo3.png" width="80" height="auto">
         </div>
       </div>
   </div>
@@ -78,10 +78,11 @@
           <form id="loginForm" action="validarCode.php" method="POST" role="form">
             <legend>Iniciar Sesión</legend>
             <div class="form-group">
+              <input type="text" name="txtCedula" class="form-control" id="cedula" requiered placeholder="Cedula">
               <input type="password" name="txtPassword" class="form-control" id="password" requiered placeholder="Contraseña">
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>  
-            <a href="registro.php" class="btn btn-success btn-block">Registrarse</a> 
+            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+            <a href="registro.php" class="btn btn-success btn-block">Registrarse</a>
           </form>
         </div>
       </div>
@@ -92,7 +93,7 @@
 
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
-  <p>Copyright © 2020. All Rights Reserved</p> 
+  <p>Copyright © 2020. All Rights Reserved</p>
 </footer>
 
 </body>

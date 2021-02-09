@@ -12,7 +12,7 @@ class UsuarioControlador{
 		return UsuarioDao::login($obj_usuario);
 	}
 
-	public function getUsuario($cedula,$password){
+	public static function getUsuario($cedula,$password){
 		$obj_usuario = new Usuario();
 		$obj_usuario->setCedula($cedula);
 		$obj_usuario->setPassword($password);
@@ -21,7 +21,7 @@ class UsuarioControlador{
 	}
 
 
-	public function validar($cedula){
+	public static function validar($cedula){
 
 		$obj_usuario = new Usuario();
 		$obj_usuario->setCedula($cedula);
@@ -29,7 +29,7 @@ class UsuarioControlador{
 		return UsuarioDao::validar($obj_usuario);
 	}
 
-	public function registrar($nombre, $apellido, $tipoDocumento, $cedula, $password, $imagen, $edad, $fechaNacimiento, $genero, $rh, $tipoAsistente, $correo, $celular, $direccion, $estadoCivil, $epsSisben, $fechaBautizmo, $pastorBautizmo, $llenoSanto, $fecha, $servidorLocal, $comite, $cargo, $privilegio){
+	public static function registrar($nombre, $apellido, $tipoDocumento, $cedula, $password, $imagen, $edad, $fechaNacimiento, $genero, $rh, $tipoAsistente, $correo, $celular, $direccion, $estadoCivil, $epsSisben, $fechaBautizmo, $pastorBautizmo, $llenoSanto, $fecha, $servidorLocal, $comite, $cargo, $privilegio){
 
 		$obj_usuario = new Usuario();
 		$obj_usuario->setNombre($nombre);

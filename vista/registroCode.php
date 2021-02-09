@@ -56,7 +56,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	$txtEdad = $diferencia->format("%y");
 
-	$existe = UsuarioControlador::validar($txtDocumento);
+	$existe =  UsuarioControlador::validar($txtDocumento);
 
 
 	if($existe == true){
@@ -65,15 +65,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}else{
 
 		if (UsuarioControlador::registrar($txtNombre, $txtApellido , $txtTipoDocumento, $txtDocumento, $txtPassword, $txtImagen, $txtEdad, $txtFechaNacimiento, $txtGenero, $txtRh, $txtTipoAsistente, $txtEmail, $txtCelular, $txtDireccion, $txtEstadoCivil, $txtEps, $txtFechaBautizo, $txtNombrePastor, $txtllenoSanto, $txtFechaSanto, $txtServidorLocal, $txtComite, $txtCargo, $txtPrivilegio)){
-			
+
 				echo '<script language="javascript">alert("Usuario Agregado Correctamente!!");</script>';
 				header("Refresh:1; url=index.php");
 		}
 }
 
-   
+
 }else{
 	header("location:registro.php?error=1");
 	}
 }
-
