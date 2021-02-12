@@ -141,8 +141,8 @@
               <label for="llenoSantoEs" class="text-left">¿Lleno del Espíritu Santo?</label>
               <select name="llenoSanto" id="llenoSanto" class="form-control">
                     <option value="">Seleccione</option>
-                    <option value="s">Si</option>
-                    <option value="n">No</option>
+                    <option value="si">Si</option>
+                    <option value="no">No</option>
               </select>
             </div>
 

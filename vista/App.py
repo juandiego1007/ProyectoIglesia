@@ -1,8 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 from flask_assets  import Environment, Bundle
+from bcrypt
 
 app = Flask(__name__)
+
+
+
+
+# Proceso terminar de cambiar todo php a py
+# Quede en registrar usuario y no he probado nada
+
 
 assetss = Environment(app)
 
@@ -26,14 +34,57 @@ app.config['MYSQL_DB'] = 'db'
 mysql = MySQL(app)
 app.secret_key = "EsunSecret0"
 
-
+semilla = bcrypt.gensalt()
 
 @app.route('/')
 def Rindex():
-    return render_template('index.php')
-@app.route('/validarCode.php')
-def Rvalidarcode():
-    return redirect(url_for('validarCode.php'))
+    if 'nombre' in session:
+        return render_template('')
+    else:
+        return render_template('index.html')
+
+
+@app.route('/pastor')
+def Rpastor():
+    if 'nombre' in session:
+        return render_template('')
+    else:
+        return render_template('')
+
+@app.route('/registro')
+def Rregistrousuario():
+    return render_template('registro.html')
+
+@app.route('/registroCode', methods=['POST'])
+def Mregistrousuario():
+    if request.method == 'POST':
+        nombre = request.form['txtNombre']
+        apellido = request.form['txtApellido']
+        tipodocumento = request.form['txtTipoDocumento']
+        numerodocumento = request.form['txtDocumento']
+        foto = request.form['txtFoto']
+        fechanacimiento = request.form['txtFechaNacimiento']
+        sexo = request.form['txtGenero']
+        rh = request.form['txtRh']
+        email = request.form['txtEmail']
+        celular = request.form['txtCelular']
+        direccion = request.form['txtDireccion']
+        estadocivil = request.form['txtEstadoCivil']
+        eps = request.form['txtEps']
+        tipoasistente = request.form['tipoAsistente']
+        fechabautizo = request.form['txtFechaBautizo']
+        nombrepastor = request.form['txtNombrePastor']
+        llenosanto = request.form['llenoSanto']
+        fechasanto = request.form['txtFechaSanto']
+        servidorlocal = request.form['servidorLocal']
+        comite = request.form['txtComite']
+        cargo = request.form['txtCargo']
+
+
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO culto (fecha, horainicio, horafinal, capacidadmax, piso) VALUES (' +  fecha  + ' , ' + horainicio + ',' + horafinal  + ' ,' + capacidadmax + ',' + piso + ')')
+        mysql.connection.commit()
+        return render_template()
 
 
 
