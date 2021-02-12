@@ -1,7 +1,7 @@
 <?php
 
-include '../controlador/UsuarioControlador.php';
-include '../helps/helps.php';
+include '../../controlador/UsuarioControlador.php';
+include '../../helps/helps.php';
 $resultado = array();
 
 session_start();
@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$resultado = array("estado"=>"true");
 
 	if (UsuarioControlador::login($txtCedula, $txtPassword)){
-		
+
 		$usuario = UsuarioControlador::getUsuario($txtCedula, $txtPassword);
 		$_SESSION["usuario"] = array(
 			"nombre" =>$usuario->getNombre(),

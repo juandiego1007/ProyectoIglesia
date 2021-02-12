@@ -1,0 +1,90 @@
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+  {% assets "assets_all" %}
+  <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  <script src="{{ ASSET_URL }}"></script>
+  <script src="{{ ASSET_URL }}"></script>
+
+  {% endassets %}
+
+  <style>
+  body {
+    font: 15px Montserrat, sans-serif;
+    line-height: 1.8;
+    color: #f5f6f7;
+  }
+  p {font-size: 16px;}
+  .margin {margin-bottom: 45px;}
+
+  .bg-1 {
+    background-color: #81D4FA ;
+    color: #424242;
+  }
+  .bg-4 {
+    background-color: #F8F9F9; /* Black Gray */
+    color: #000000  ;
+  }
+  .container-fluid {
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+  .navbar {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    letter-spacing: 5px;
+  }
+  .navbar-nav  li a:hover {
+    color: #1abc9c !important;
+  }
+
+#pai div{
+  display: none;
+}
+
+#pai2 div{
+  display: none;
+}
+#pai3 div{
+  display: none;
+}
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-default">
+  <div class="container bg-white">
+      <div class="row text-center h-100 bg-white d-flex justify-content-center align-items-center">
+        <div class="col-lg-4">
+          <img src="static/img/logo1.png" width="300" height="auto">
+        </div>
+        <div class="col-lg-4">
+          <img src="static/img/logo4.png" width="350" height="auto">
+        </div>
+        <div class="col-lg-4">
+          <img src="static/img/logo3.png" width="80" height="auto">
+        </div>
+      </div>
+  </div>
+</nav>
+
+
+
+
+          {% block content %}
+          {% endblock %}
+</body>
+</html>

@@ -2,84 +2,12 @@
 <html lang="en">
 <head>
   <!-- Theme Made By www.w3schools.com - No Copyright -->
-  <title>Reserva de Asistencia - Registro</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <title>Registro de usuario</title>
 
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="assets/css/overhang.min.css" />
-  <script type="text/javascript" src="assets/js/overhang.min.js"></script>
-  <script src="assets/js/app1.js"></script>
-  <script src="assets/js/app2.js"></script>
 
-  <style>
-  body {
-    font: 15px Montserrat, sans-serif;
-    line-height: 1.8;
-    color: #f5f6f7;
-  }
-  p {font-size: 16px;}
-  .margin {margin-bottom: 45px;} 
+{% extends  "layout.html" %}
 
-  .bg-1 { 
-    background-color: #81D4FA ; 
-    color: #424242;
-  }
-  .bg-4 { 
-    background-color: #F8F9F9; /* Black Gray */
-    color: #000000  ;
-  }
-  .container-fluid {
-    padding-top: 70px;
-    padding-bottom: 70px;
-  }
-  .navbar {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    border: 0;
-    border-radius: 0;
-    margin-bottom: 0;
-    font-size: 12px;
-    letter-spacing: 5px;
-  }
-  .navbar-nav  li a:hover {
-    color: #1abc9c !important;
-  }
-
-#pai div{
-  display: none;
-}
-
-#pai2 div{
-  display: none;
-}
-#pai3 div{
-  display: none;
-}
-  </style>
-</head>
-<body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-default">
-  <div class="container bg-white">
-      <div class="row text-center h-100 bg-white d-flex justify-content-center align-items-center">
-        <div class="col-lg-4">
-          <img src="img/logo1.png" width="300" height="auto">          
-        </div>
-        <div class="col-lg-4">
-          <img src="img/logo4.png" width="350" height="auto">          
-        </div>
-        <div class="col-lg-4">
-          <img src="img/logo3.png" width="80" height="auto">          
-        </div>
-      </div>
-  </div>
-</nav>
+{% block content %}
 
 <!-- First Container -->
 <div class="container-fluid bg-1 text-left">
@@ -148,7 +76,7 @@
                     <option> O+</option>
                     <option> O-</option>
                     <option> AB+</option>
-                    <option> AB-</option>                    
+                    <option> AB-</option>
               </select>
             </div>
 
@@ -237,16 +165,16 @@
             <div id="pai3">
               <div id="si" class="form-group">
                 <label for="comite" class="text-left">Comité</label>
-                <input type="text" name="txtComite" class="form-control" id="comite"  placeholder="Ingresa tú Comité">   
+                <input type="text" name="txtComite" class="form-control" id="comite"  placeholder="Ingresa tú Comité">
               </div>
 
               <div id="si" class="form-group">
                 <label for="cargo" class="text-left">Cargo</label>
-                <input type="text" name="txtCargo" class="form-control" id="cargo"  placeholder="Ingresa tú Cargo">   
-              </div> 
+                <input type="text" name="txtCargo" class="form-control" id="cargo"  placeholder="Ingresa tú Cargo">
+              </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block">Registrarse</button>  
+            <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
             <a href="index.php" class="btn btn-success btn-block">Regresar</a>
 
           </form>
@@ -258,8 +186,7 @@
 
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
-  <p>Copyright © 2020. All Rights Reserved</p> 
+  <p>Copyright © 2020. All Rights Reserved</p>
 </footer>
 
-</body>
-</html>
+{% endblock %}

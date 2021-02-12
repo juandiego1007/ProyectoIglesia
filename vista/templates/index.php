@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Bienvenido</title>
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<!-- First Container -->
+<div class="container-fluid bg-1 text-left">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+
+          <form id="loginForm" action="validarCode.php" method="POST" role="form">
+            <legend>Iniciar Sesión</legend>
+            <div class="form-group">
+              <input type="text" name="txtCedula" class="form-control" id="cedula" requiered placeholder="Cedula">
+              <input type="password" name="txtPassword" class="form-control" id="password" requiered placeholder="Contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+            <a href="registro.php" class="btn btn-success btn-block">Registrarse</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+  <p>Copyright © 2020. All Rights Reserved</p>
+</footer>
+
+{% endblock %}
