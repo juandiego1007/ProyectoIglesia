@@ -8,13 +8,13 @@
 
 
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-  {% assets "assets_all" %}
-  <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
-  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-  <script src="{{ ASSET_URL }}"></script>
-  <script src="{{ ASSET_URL }}"></script>
 
-  {% endassets %}
+
+
+  <link rel="stylesheet" type="text/css" href="../static/assets/css/overhang.min.css" />
+  <script type="text/javascript" src="../static/assets/js/overhang.min.js"></script>
+
+  <!-- <script src="../static/assets/js/app1.js"></script> -->
 
   <style>
   body {
@@ -80,6 +80,18 @@
       </div>
   </div>
 </nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages%}
+<div class="alert {{category}}   " style="z-index: 99999;" role="alert">
+  {{message}}
+
+</div>
+
+{%endfor%}
+{%endif%}
+{%endwith%}
 
 
 

@@ -3,6 +3,7 @@
 <head>
   <!-- Theme Made By www.w3schools.com - No Copyright -->
   <title>Bienvenido</title>
+
 {% extends  "layout.html" %}
 
 {% block content %}
@@ -14,13 +15,15 @@
       <div class="panel panel-default">
         <div class="panel-body">
 
-          <form id="loginForm" action="validarCode.php" method="POST" role="form">
+
+          <form id="loginForm" action="/iniciosesion" method="POST" role="form">
             <legend>Iniciar Sesión</legend>
             <div class="form-group">
               <input type="text" name="txtCedula" class="form-control" id="cedula" requiered placeholder="Cedula">
               <input type="password" name="txtPassword" class="form-control" id="password" requiered placeholder="Contraseña">
             </div>
             <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+            
             <a href="/registro" class="btn btn-success btn-block">Registrarse</a>
           </form>
         </div>
@@ -28,6 +31,8 @@
     </div>
   </div>
 </div>
+
+
 
 
 <!-- Footer -->
