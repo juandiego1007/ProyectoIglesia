@@ -3,7 +3,8 @@ from flask_mysqldb import MySQL
 from flask_assets  import Environment, Bundle
 import  bcrypt
 import datetime
-from datetime import date,datetime
+from datetime import date,datetime, timedelta
+from json import dumps
 
 app = Flask(__name__)
 
@@ -51,10 +52,10 @@ def Rindex():
 
 @app.route('/pastor')
 def Rpastor():
-    if 'nombre' in session:
-        return render_template('')
-    else:
-        return render_template('')
+
+    return render_template('/pastor.html')
+
+
 
 @app.route('/registro')
 def Rregistrousuario():
@@ -133,7 +134,7 @@ def Miniciosesion():
         password =  request.form['txtPassword']
 
         cur = mysql.connection.cursor()
-        cur.execute('select cedula, password from usuarios where cedula='+cedula)
+        cur.execute('select cedula, password, privilegio from usuarios where cedula='+cedula)
         resultado = cur.fetchone()
         mysql.connection.commit()
 
@@ -147,9 +148,13 @@ def Miniciosesion():
 
 
             if (bcrypt.checkpw(passencodeHTML,passencodedDB)):
+                if(resultado[2]==2):
+                    return redirect(url_for('Rpastor'))
+                else:
+                    return 'bien'
                 # registrar la session
                 # return redirect(url_for(''))
-                return 'bien'
+
 
             else:
                 flash('La contraseña o la cedula estan incorrectas', 'alert-danger')
@@ -164,8 +169,58 @@ def Miniciosesion():
         return redirect(url_for('Rindex'))
 
 
+@app.route('/busquedadecultos')
+def Rbusquedadecultos():
+    return render_template('busquedadecultos.html')
+
+@app.route('/listarcultos', methods=['POST'])
+def Mlistarcultos():
+
+    fechainicio = request.form['txtfechainicio']
+    fechafinal = request.form['txtfechafinal']
+
+    cur = mysql.connection.cursor()
+    horaminimo = '06:00'
+    format = '%H:%M'
+    horaminimoform = datetime.strptime(horaminimo, format)
+
+    date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+
+    # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+    unlist = ()
+    cantidad = 0
+    statico = 0
+
+    for i in range(7):
+        for n in range(20):
+
+            tiempoabuscar = horaminimoform+timedelta(hours=n)
+            daystoadd = timedelta(days=i)
+            fechaensuma = date_time_obj + timedelta(days=i)
+
+            encontro = cur.execute("select fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'")
+
+            if(encontro != 0 ):
+                unlist +=  cur.fetchone()
+                cantidad +=1
 
 
+
+
+
+    # for elemento in unlist:
+    #
+    #
+    #     print(elemento)
+
+
+    # for x in range(cantidad):
+    #     print(unlist[statico])
+    #     statico+=6
+
+    print(unlist)
+
+    return render_template('listarcultos.html', cantidad=cantidad, unlist=unlist)
 
 @app.route('/Crearculto')
 def CrearcultoTemplate():

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Listar cultos</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/StyleforSchedule.css" />
+
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid bg-1 text-center">
+
+
+                <div class="timetable-img text-center">
+                    <img src="img/content/timetable.png" alt="">
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr class="bg-light-gray">
+                                <th class="text-uppercase">Hora</th>
+
+                                {% set list = [0,6,12,18,24,30,36] %}
+
+                                {% for elemento in list if list.index(elemento) <= cantidad : %}
+
+                                <th class="text-uppercase">{{unlist[elemento]}}</th>
+                                {%endfor%}
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                          
+                            <tr>
+                                <td class="align-middle">6:00 - 7:00 AM</td>
+                                <td>
+                                  <div class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom ">
+                                    <span class="text-white font-size20 ">Capacidad: 30 de 30</span>
+                                    <br>
+                                    <span class="text-white font-size20 ">Piso: 1</span>
+                                </td>
+
+
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <footer class="container-fluid bg-4 text-center">
+              <p>Copyright © 2020. All Rights Reserved</p>
+            </footer>
+
+            {% endblock %}
