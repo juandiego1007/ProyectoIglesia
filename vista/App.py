@@ -4,7 +4,6 @@ from flask_assets  import Environment, Bundle
 import  bcrypt
 import datetime
 from datetime import date,datetime, timedelta
-from json import dumps
 
 app = Flask(__name__)
 
@@ -177,10 +176,10 @@ def Rbusquedadecultos():
 def Mlistarcultos():
 
     fechainicio = request.form['txtfechainicio']
-    fechafinal = request.form['txtfechafinal']
+
 
     cur = mysql.connection.cursor()
-    horaminimo = '06:00'
+    horaminimo = '00:00'
     format = '%H:%M'
     horaminimoform = datetime.strptime(horaminimo, format)
 
@@ -192,33 +191,20 @@ def Mlistarcultos():
     statico = 0
 
     for i in range(7):
-        for n in range(20):
+        for n in range(24):
+            for h in range(60):
 
-            tiempoabuscar = horaminimoform+timedelta(hours=n)
-            daystoadd = timedelta(days=i)
-            fechaensuma = date_time_obj + timedelta(days=i)
+                tiempoabuscar = horaminimoform+timedelta(hours=n,minutes=h)
 
-            encontro = cur.execute("select fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'")
-
-            if(encontro != 0 ):
-                unlist +=  cur.fetchone()
-                cantidad +=1
+                fechaensuma = date_time_obj + timedelta(days=i)
 
 
+                encontro = cur.execute("select fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'" + "ORDER BY fecha, horainicio")
 
+                if(encontro != 0 ):
+                    unlist +=  cur.fetchone()
+                    cantidad +=1
 
-
-    # for elemento in unlist:
-    #
-    #
-    #     print(elemento)
-
-
-    # for x in range(cantidad):
-    #     print(unlist[statico])
-    #     statico+=6
-
-    print(unlist)
 
     return render_template('listarcultos.html', cantidad=cantidad, unlist=unlist)
 
@@ -237,7 +223,10 @@ def CrearcultoAction():
         cur = mysql.connection.cursor()
         cur.execute('INSERT INTO culto (fecha, horainicio, horafinal, capacidadmax, piso) VALUES (' +  fecha  + ' , ' + horainicio + ',' + horafinal  + ' ,' + capacidadmax + ',' + piso + ')')
         mysql.connection.commit()
-        return render_template()
+
+        flash('Culto creado con exito!', 'alert-success')
+        return redirect(url_for('Rpastor'))
+
 
     else:
         pass

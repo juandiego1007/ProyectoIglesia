@@ -12,45 +12,63 @@
 <div class="container-fluid bg-1 text-center">
 
 
-                <div class="timetable-img text-center">
-                    <img src="img/content/timetable.png" alt="">
-                </div>
+                
                 <div class="table-responsive">
                     <table class="table table-bordered text-center">
                         <thead>
                             <tr class="bg-light-gray">
                                 <th class="text-uppercase">Hora</th>
 
-                                {% set list = [0,6,12,18,24,30,36] %}
 
-                                {% for elemento in list if list.index(elemento) <= cantidad : %}
 
-                                <th class="text-uppercase">{{unlist[elemento]}}</th>
-                                {%endfor%}
+
+
+                                <th class="text-uppercase">Detalles</th>
+
 
 
 
                             </tr>
                         </thead>
+
                         <tbody>
-                          
+                          <!-- Usamos jinja.  Como la estructura de la base de datos viene por 6 campos, hacemos un list -->
+                          <!-- donde esten los numeros desde 0 luego 0+6 y asi sucesivamente, hasta llegar a 7 dias, ya que solo se  -->
+                          <!-- mostrara los compromisos de cada 7 dias desde la fecha solicitada -->
+
+                          {%set list= [0,6,12,18,24,30,36]%}
+
+                          <!-- Revisamos si el numero de la lista esta en el index que creamos, de 0 a 36 y filtramos los resultados -->
+                          <!-- para que solo nos muestre la cantidad de compromisos que la consulta a la base de datos nos arrojo -->
+                          <!-- para evitar crear espacios en la tabla html vacios -->
+
+                          {% for elemento in list if list.index(elemento) < cantidad : %}
+
+
                             <tr>
-                                <td class="align-middle">6:00 - 7:00 AM</td>
+
+                                <td class="align-middle"><p style="vertical-align: middle;" class="P-Fix" >{{unlist[elemento+1]}} - {{unlist[elemento+2]}}<p></td>
+
+
                                 <td>
                                   <div class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom ">
-                                    <span class="text-white font-size20 ">Capacidad: 30 de 30</span>
+                                    <span class="text-white font-size20 ">Capacidad: {{unlist[elemento+3]}} de {{unlist[elemento+4]}}</span>
                                     <br>
-                                    <span class="text-white font-size20 ">Piso: 1</span>
+                                    <span class="text-white font-size20 ">Piso: {{unlist[elemento+5]}}</span>
+                                    <br>
+                                    <span class="text-white font-size20 ">Fecha: {{unlist[elemento]}}</span>
+                                    </div>
                                 </td>
-
-
-
                             </tr>
-
-
+                            {%endfor%}
                         </tbody>
                     </table>
-                </div>
+                    <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+                    <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+                      <a href="/pastor" class="btn btn-success btn-block ">Regresar</a>
+                    </div>
+                  </div>
+
 
             </div>
 
