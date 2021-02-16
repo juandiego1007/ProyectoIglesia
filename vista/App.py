@@ -231,5 +231,97 @@ def CrearcultoAction():
     else:
         pass
 
+@app.route('/buscarcultoM')
+def RbuscarcultoM():
+    return render_template('buscarcultoM.html')
+@app.route('/modificarcultos' , methods=['POST'])
+def Mmodificarcultos():
+    if request.method == 'POST':
+        fechainicio = request.form['txtfechainicio']
+
+
+        cur = mysql.connection.cursor()
+        horaminimo = '00:00'
+        format = '%H:%M'
+        horaminimoform = datetime.strptime(horaminimo, format)
+
+        date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+
+        # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+        unlist = ()
+        cantidad = 0
+        statico = 0
+
+        for i in range(7):
+            for n in range(24):
+                for h in range(60):
+
+                    tiempoabuscar = horaminimoform+timedelta(hours=n,minutes=h)
+
+                    fechaensuma = date_time_obj + timedelta(days=i)
+
+
+                    encontro = cur.execute("select idCulto, fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'" + "ORDER BY fecha, horainicio")
+
+                    if(encontro != 0 ):
+                        unlist +=  cur.fetchone()
+                        cantidad +=1
+
+
+        return render_template('modificarculto.html', cantidad=cantidad, unlist=unlist)
+    else:
+        return redirect(url_for('Rpastor'))
+
+@app.route('/modificarcultoM', methods=['POST'])
+def MmodificarcultoM():
+    if request.method == 'POST':
+        seleccionid = request.form['txtid']
+
+        cur = mysql.connection.cursor()
+
+        cur.execute("select fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where idCulto=" + seleccionid)
+        valores = cur.fetchone()
+
+        return render_template('modificarcultoM.html', valores=valores, seleccionid=seleccionid)
+
+    else:
+        return redirect(url_for('Rpastor'))
+
+@app.route('/Cambiarculto', methods=['POST'])
+def Mcambiarculto():
+    if request.method == 'POST':
+
+        fecha = "'" + request.form['txtFecha'] + "'"
+        horainicio ="'" + request.form['txthorainicio'] + "'"
+        horafinal ="'" + request.form['txthorafinal'] + "'"
+        capacidadmax = request.form['txtcapacidadmax']
+        piso = request.form['txtpiso']
+        id = request.form['txtid']
+
+        cur = mysql.connection.cursor()
+        cur.execute('UPDATE  culto SET fecha=' +  fecha  + ', horainicio=' + horainicio + ', horafinal=' + horafinal + ', capacidadmax=' + capacidadmax + ', piso=' + piso + ' WHERE idCulto='+ id )
+        mysql.connection.commit()
+
+        flash('Culto modificado con exito!', 'alert-success')
+        return redirect(url_for('Rpastor'))
+
+    else:
+        return redirect(url_for('Rpastor'))
+
+@app.route('/eliminarculto', methods=['POST'])
+def Meliminarculto():
+    if request.method == 'POST':
+        id = request.form['txtid']
+        cur = mysql.connection.cursor()
+        cur.execute('DELETE FROM  culto  WHERE idCulto='+ id )
+        mysql.connection.commit()
+
+        flash('Culto eliminado con exito!', 'alert-success')
+        return redirect(url_for('Rpastor'))
+
+    else:
+        return redirect(url_for('Rpastor'))
+
+
 if __name__ == '__main__':
     app.run(debug=True) #En modo de prueba, para que se reinicie solo
