@@ -7,13 +7,7 @@ from datetime import date,datetime, timedelta
 
 app = Flask(__name__)
 
-
-
-
-# Proceso terminar de cambiar todo php a py
-# Quede en registrar usuario y no he probado nada
-
-
+# set de assets para toas las paginas html de la aplicacion
 assetss = Environment(app)
 
 css = Bundle('css/bootstrap.min.css','css/main.css')
@@ -30,19 +24,29 @@ assetss.register('assets_2',assetjs)
 
 img = Bundle('img/logo1.png', 'img/logo4.png', 'img/logo3.png')
 assetss.register('img_all', img)
+# final de assets
 
+
+# configuracion e inicializacion de mysql and flask
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'ecw12345'
 app.config['MYSQL_DB'] = 'db'
 
 mysql = MySQL(app)
+
+# set para clave secreta. se usa para enviar mensajes por flash y para las cookies
 app.secret_key = "EstaEsun1Contr4@"
 
+
+# semilla usada para encriptar y desencriptar las contraseñas
 semilla = bcrypt.gensalt()
 
+# Usado para establecer el tiempo limite para que una sesion se caduque
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+
+# Metodo madre, retorna la pagina principal del sitio
 
 @app.route('/')
 def Rindex():
@@ -56,14 +60,8 @@ def Rindex():
         return render_template('index.html')
 
 
-@app.route('/pastor')
-def Rpastor():
-    if 'nombre' in session and session['privis'] == 2:
 
-        return render_template('/pastor.html')
-    else:
-        return redirect(url_for('Rindex'))
-
+# registro de usuario general
 
 @app.route('/registro')
 def Rregistrousuario():
@@ -144,12 +142,7 @@ def Mregistrousuario():
             return render_template('index.html')
 
 
-@app.route('/usuario')
-def Rusuario():
-    if 'nombre' in session and session['privis'] == 1:
-        return render_template('Usuario.html')
-    else:
-        return redirect(url_for('Rindex'))
+# iniciar sesion de usuario general
 
 @app.route('/iniciosesion', methods=['POST'])
 def Miniciosesion():
@@ -208,6 +201,8 @@ def Miniciosesion():
 
             return redirect(url_for('Rindex'))
 
+# cerrar sesion de usuario general
+
 @app.route('/cerrarsesion')
 def Mcerrarsesion():
     if 'nombre' in session:
@@ -223,6 +218,21 @@ def Mcerrarsesion():
         return redirect(url_for('Rindex'))
 
 
+
+
+        # Metodos para el pastor
+
+@app.route('/pastor')
+def Rpastor():
+    if 'nombre' in session and session['privis'] == 2:
+
+        return render_template('/pastor.html')
+    else:
+        return redirect(url_for('Rindex'))
+
+# retornamos la pagina solocitada, en este caso para buscar cultos donde
+# se proporciona un input tipo fecha
+
 @app.route('/busquedadecultos')
 def Rbusquedadecultos():
     if 'nombre' in session and session['privis'] == 2:
@@ -232,6 +242,11 @@ def Rbusquedadecultos():
         flash('No tiene permisos suficientes', 'alert-danger')
         return redirect(url_for('Rindex'))
 
+
+# recivimos la fecha enviada desde el metodo anterior y comenzamos el proceso de formato estandar
+# luego de tener la fecha en formato, comenzamos a averiguar si hay algun culto desde la fecha enviada hasta 7 dias
+# despues, evaluando cada minuto que tiene el dia. finalmente guardamos lo que la sentencia sql nos de y la enviamos
+# como parametro para ser usado en otra pagina
 @app.route('/listarcultos', methods=['POST'])
 def Mlistarcultos():
     if 'nombre' in session and session['privis'] == 2:
@@ -279,7 +294,7 @@ def Mlistarcultos():
         return redirect(url_for('Rindex'))
 
 
-
+# retornamos el formulario para registrar un culto nuevo
 
 @app.route('/Crearculto')
 def CrearcultoTemplate():
@@ -289,6 +304,8 @@ def CrearcultoTemplate():
         flash('No tiene permisos suficientes', 'alert-danger')
         return redirect(url_for('Rindex'))
 
+
+# recivimos los datos enviados para registrar el culto, ejecutamos la sentencia sql para registro y retornamos a la pagina principal
 @app.route('/CrearcultoAction', methods=['POST'])
 def CrearcultoAction():
     if 'nombre' in session and session['privis'] == 2:
@@ -315,6 +332,8 @@ def CrearcultoAction():
         return redirect(url_for('Rindex'))
 
 
+# retornamos la pagina encargada de solicitar una fecha para hacer la busqueda
+
 @app.route('/buscarcultoM')
 def RbuscarcultoM():
     if 'nombre' in session and session['privis'] == 2:
@@ -323,6 +342,11 @@ def RbuscarcultoM():
     else:
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
+
+# obtenemos la fecha del metodo anterior y le hacemos un proceso de formato,
+# luego al igual que en los anteriores metodos, evaluamos 7 dias apartir de la fecha que el usuarios
+# ingreso y tambien cada minuto del dia. finalmente guardamos los resultados que arroja la base de datos
+# y devolvemos los resultados como parametro para ser usado depues
 
 @app.route('/modificarcultos' , methods=['POST'])
 def Mmodificarcultos():
@@ -369,6 +393,8 @@ def Mmodificarcultos():
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
 
+# obtenemos el id del culto que se desea modificar(el seleccionado) y comenzamos la busqueda de la informacion. finalmente enviamos los datos
+# del culto que se selecciono y se envian como paramentro para ser usado en proceso por parte del navegador del usuario
 
 @app.route('/modificarcultoM', methods=['POST'])
 def MmodificarcultoM():
@@ -390,6 +416,9 @@ def MmodificarcultoM():
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
 
+
+# ahora recibimos los cambios que el pastor deseo hacer sobre el culto y ejecutamos la sentencia de sql para
+# actualizar registros
 
 @app.route('/Cambiarculto', methods=['POST'])
 def Mcambiarculto():
@@ -419,6 +448,9 @@ def Mcambiarculto():
         return redirect(url_for('Rindex'))
 
 
+# obtenemos el id del culto que el pastor selecciono para ser eliminado
+# y ejecutamos la sentencia sql para eliminar el registro en la base de datos
+
 @app.route('/eliminarculto', methods=['POST'])
 def Meliminarculto():
     if 'nombre' in session and session['privis'] == 2:
@@ -441,8 +473,58 @@ def Meliminarculto():
 
 
 
+@app.route('/buscarusuario')
+def Mbuscarusuario():
+    if 'nombre' in session and session['privis'] == 2:
+        return render_template('buscarusuario.html')
+
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/mostrarusuario', methods=['POST'])
+def Mmostrarusuario():
+    if 'nombre' in session and session['privis'] == 2:
+        if request.method == 'POST':
+            cedulaobtenida = request.form['txtcedula']
+            cur = mysql.connection.cursor()
+            existe = cur.execute('select * from usuarios where cedula=' + str(cedulaobtenida) )
+            if existe != 0:
+                resultado = cur.fetchone()
+                mysql.connection.commit()
+                return render_template('Rmostrandousuario', resultado=resultado)
+            else:
+                flash('No existe el usuario solicitado!', 'alert-danger')
+                return redirect(url_for('Rindex'))
+
+
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/Rmostrandousuario')
+def Rmostrandousuario():
+    if 'nombre' in session and session['privis'] == 2:
+        return redirect(url_for('Rmostrandousuario.html'))
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+
         # METODOS PARA EL USUARIO
 
+
+@app.route('/usuario')
+def Rusuario():
+    if 'nombre' in session and session['privis'] == 1:
+        return render_template('Usuario.html')
+    else:
+        return redirect(url_for('Rindex'))
+
+# Retornamos la pagina solicitada
 @app.route('/buscarcultosU')
 def RBuscarcultosU():
     if 'nombre' in session and session['privis'] == 1:
@@ -452,7 +534,9 @@ def RBuscarcultosU():
         return redirect(url_for('Rindex'))
 
 
-
+# Obtenemos la fecha enviada para buscar una reserva, la formatamos  y finalmente comenzamos
+# a verificar si existe alguna reserva desde la fecha ingresada hasta 7 dias despues
+# contando cada minuto de un dia
 @app.route('/listarcultosUU', methods=['POST'])
 def MlistarcultosUU():
     print('entro a listarcultos sin priv')
@@ -500,6 +584,12 @@ def MlistarcultosUU():
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
 
+
+# Obtenemos la informacion del hidden input y comenzamos verificando la capacidad maxima
+# de esta manera sabemos si el usuario puede reserbar asistencia
+# en caso de que si, obtenemos los datos del usuario y con ella hacemos la consulta sql
+# para registrar la reserva
+
 @app.route('/SeleccioncultoU', methods=['POST'])
 def MseleccionarcultoU():
     if 'nombre' in session and session['privis']==1:
@@ -535,6 +625,9 @@ def MseleccionarcultoU():
         flash('No tiene permisos!', 'alert-danger')
         return redirect(url_for('Rusuario'))
 
+
+# Retornamos la pagina html solicitada
+
 @app.route('/listarasistenciasU')
 def listarasistenciasU():
     if 'nombre' in session and session['privis'] == 1:
@@ -542,6 +635,9 @@ def listarasistenciasU():
     else:
         flash('No tiene permisos!', 'alert-danger')
         return redirect(url_for('Rusuario'))
+
+# hacemos el mismop proceso del metodo anterior para listar las reservas
+# en este caso queremos saber
 
 @app.route('/MlistarasistenciasU', methods=['POST'])
 def MlistarasistenciasU():
@@ -588,6 +684,11 @@ def MlistarasistenciasU():
     else:
         flash('No tiene permisos!', 'alert-danger')
         return redirect(url_for('Rusuario'))
+
+# comenzamos verificando los datos del usuario en la sesion y con esos datos eliminamos el registro en la tabla de reservas
+# luego al ser eliminado de reservas se debe actualizar en la tabla de cultos la capacidad que tiene el culto.
+# por tanto solicitamos el valor de capacidad del culto y le restamos una asistencia.
+# finalmente ejecutamos el update con la nueva capacidad que queda en el culto
 
 @app.route('/eliminarasistenciaU', methods=['POST'])
 def eliminarasistenciaU():

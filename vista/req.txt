@@ -1,4 +1,4 @@
 falta:
 que el pastor pueda listar y modificar los usuarios
 que el pastor pueda CRUD de agendar citacion
-que el usuario pueda curd de asistir a culto (ya esta asistir,no se podra modificar una asistencia)(revisar puede que ya este terminado)
+que el usuario pueda ver la informacion de las citaciones del pastor
