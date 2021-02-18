@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Busqueda de cultos</title>
+
+
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid bg-1 text-left">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form id="registraU" action="/listarcultosUU" method="POST" role="form">
+            <legend class="text-center">Ingrese la fecha que desea ver.  Se mostraran 7 dias desde la fecha ingresada</legend>
+
+            <div class="form-group">
+              <label for="fechainicio" class="text-left">Fecha de inicio</label>
+              <input type="date" name="txtfechainicio" class="form-control" id="fechainicio"  required placeholder="Ingresa la fecha de inicio">
+            </div>
+
+
+
+
+            <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+            <a href="/usuario" class="btn btn-success btn-block">Regresar</a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+  <p>Copyright © 2021. All Rights Reserved</p>
+</footer>
+
+{% endblock %}

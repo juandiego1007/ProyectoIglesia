@@ -41,11 +41,14 @@ app.secret_key = "EstaEsun1Contr4@"
 
 semilla = bcrypt.gensalt()
 
+app.permanent_session_lifetime = timedelta(minutes=5)
+
+
 @app.route('/')
 def Rindex():
 
     if 'nombre' in session and session['privis'] == 1 :
-        return render_template('Rusuario')
+        return redirect(url_for('Rusuario'))
     elif 'nombre' in session:
         return redirect(url_for('Rpastor'))
 
@@ -141,6 +144,12 @@ def Mregistrousuario():
             return render_template('index.html')
 
 
+@app.route('/usuario')
+def Rusuario():
+    if 'nombre' in session and session['privis'] == 1:
+        return render_template('Usuario.html')
+    else:
+        return redirect(url_for('Rindex'))
 
 @app.route('/iniciosesion', methods=['POST'])
 def Miniciosesion():
@@ -169,16 +178,19 @@ def Miniciosesion():
 
                 if (bcrypt.checkpw(passencodeHTML,passencodedDB)):
                     if(resultado[2]==2):
+                        session.permanent = True  # <--- makes the permanent session
                         session['nombre'] = resultado[3] + resultado[4]
-                        session['permis'] = 2
+                        session['privis'] = 2
                         session['cedula'] = int(resultado[0])
+
                         return redirect(url_for('Rpastor'))
                     else:
+                        session.permanent = True  # <--- makes the permanent session
                         session['nombre'] = resultado[3] + resultado[4]
-                        session['permis'] = 1
+                        session['privis'] = 1
                         session['cedula'] = int(resultado[0])
                         print(session)
-                        return 'bien'
+                        return redirect(url_for('Rusuario'))
 
                     # registrar la session
                     # return redirect(url_for(''))
@@ -196,6 +208,20 @@ def Miniciosesion():
 
             return redirect(url_for('Rindex'))
 
+@app.route('/cerrarsesion')
+def Mcerrarsesion():
+    if 'nombre' in session:
+        session.pop('nombre', None)
+        session.pop('privis', None)
+        session.pop('cedula', None)
+        flash('Sesion cerrada con exito!', 'alert-success')
+        print(session)
+        return redirect(url_for('Rindex'))
+
+    else:
+        flash('No tiene permisos suficientes', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
 
 @app.route('/busquedadecultos')
 def Rbusquedadecultos():
@@ -209,38 +235,43 @@ def Rbusquedadecultos():
 @app.route('/listarcultos', methods=['POST'])
 def Mlistarcultos():
     if 'nombre' in session and session['privis'] == 2:
-        fechainicio = request.form['txtfechainicio']
+        if request.method == 'POST':
+
+            fechainicio = request.form['txtfechainicio']
 
 
-        cur = mysql.connection.cursor()
-        horaminimo = '00:00'
-        format = '%H:%M'
-        horaminimoform = datetime.strptime(horaminimo, format)
+            cur = mysql.connection.cursor()
+            horaminimo = '00:00'
+            format = '%H:%M'
+            horaminimoform = datetime.strptime(horaminimo, format)
 
-        date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+            date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
 
-        # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
-        unlist = ()
-        cantidad = 0
-        statico = 0
+            # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+            unlist = ()
+            cantidad = 0
+            statico = 0
 
-        for i in range(7):
-            for n in range(24):
-                for h in range(60):
+            for i in range(7):
+                for n in range(24):
+                    for h in range(60):
 
-                    tiempoabuscar = horaminimoform+timedelta(hours=n,minutes=h)
+                        tiempoabuscar = horaminimoform+timedelta(hours=n,minutes=h)
 
-                    fechaensuma = date_time_obj + timedelta(days=i)
-
-
-                    encontro = cur.execute("select fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'" + "ORDER BY fecha, horainicio")
-
-                    if(encontro != 0 ):
-                        unlist +=  cur.fetchone()
-                        cantidad +=1
+                        fechaensuma = date_time_obj + timedelta(days=i)
 
 
-        return render_template('listarcultos.html', cantidad=cantidad, unlist=unlist)
+                        encontro = cur.execute("select fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'" + "ORDER BY fecha, horainicio")
+
+                        if(encontro != 0 ):
+                            unlist +=  cur.fetchone()
+                            cantidad +=1
+
+
+            return render_template('listarcultos.html', cantidad=cantidad, unlist=unlist)
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rindex'))
 
     else:
 
@@ -292,6 +323,7 @@ def RbuscarcultoM():
     else:
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
+
 @app.route('/modificarcultos' , methods=['POST'])
 def Mmodificarcultos():
     if 'nombre' in session and 'privis' == 2:
@@ -407,6 +439,101 @@ def Meliminarculto():
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
 
+
+
+        # METODOS PARA EL USUARIO
+
+@app.route('/buscarcultosU')
+def RBuscarcultosU():
+    if 'nombre' in session and session['privis'] == 1:
+        return render_template('buscarcultosU.html')
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+
+
+@app.route('/listarcultosUU', methods=['POST'])
+def MlistarcultosUU():
+    print('entro a listarcultos sin priv')
+    if 'nombre' in session and session['privis'] == 1:
+        print('entro a listarcultos con priv')
+        if request.method == 'POST':
+            fechainicio = request.form['txtfechainicio']
+
+
+            cur = mysql.connection.cursor()
+            horaminimo = '00:00'
+            format = '%H:%M'
+            horaminimoform = datetime.strptime(horaminimo, format)
+
+            date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+
+            # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+            unlist = ()
+            cantidad = 0
+            statico = 0
+
+            for i in range(7):
+                for n in range(24):
+                    for h in range(60):
+
+                        tiempoabuscar = horaminimoform+timedelta(hours=n,minutes=h)
+
+                        fechaensuma = date_time_obj + timedelta(days=i)
+
+
+                        encontro = cur.execute("select idCulto, fecha, horainicio, horafinal, capacidad, capacidadmax, piso from culto where fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND horainicio="+ "'"+ str(tiempoabuscar.time()) +"'" + "ORDER BY fecha, horainicio")
+
+                        if(encontro != 0 ):
+                            unlist +=  cur.fetchone()
+                            cantidad +=1
+
+
+            return render_template('SeleccioncultoU.html', cantidad=cantidad, unlist=unlist)
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rusuario'))
+
+    else:
+
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/SeleccioncultoU', methods=['POST'])
+def MseleccionarcultoU():
+    if 'nombre' in session and session['privis']==1:
+
+        if request.method == 'POST':
+            idculto = request.form['txtid']
+            cur = mysql.connection.cursor()
+            cur.execute('select capacidad, capacidadmax from culto where idCulto='+str(idculto))
+            capacidad = cur.fetchone()
+            print(capacidad)
+
+            if capacidad[0]<=capacidad[1]:
+
+                existe = cur.execute('select idUsuario from usuarios where cedula=' + "'" +str(session['cedula']) + "'")
+                resultado = cur.fetchone()
+                print(resultado)
+                if existe != 0:
+                    cur.execute('insert into reserva (idCulto, idUsuario) values (' + str(idculto) + ' , ' +  str(resultado[0]) + ')')
+                    cur.execute('update culto set capacidad='+ str(capacidad[0]+1) + ' where idculto=' + str(idculto))
+                    mysql.connection.commit()
+                    flash('Asistencia registrada!', 'alert-success')
+                    return redirect(url_for('Rusuario'))
+                else:
+                    flash('No existe el usuario!', 'alert-danger')
+                    return redirect(url_for('Rusuario'))
+            else:
+                flash('Capacidad maxima excedida. No se pudo regitrar la asistencia!', 'alert-danger')
+                return redirect(url_for('Rusuario'))
+        else:
+            flash('Solicitud no aceptada!', 'alert-danger')
+            return redirect(url_for('Rusuario'))
+    else:
+        flash('No tiene permisos!', 'alert-danger')
+        return redirect(url_for('Rusuario'))
 
 if __name__ == '__main__':
     app.run(debug=True) #En modo de prueba, para que se reinicie solo
