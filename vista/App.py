@@ -535,5 +535,100 @@ def MseleccionarcultoU():
         flash('No tiene permisos!', 'alert-danger')
         return redirect(url_for('Rusuario'))
 
+@app.route('/listarasistenciasU')
+def listarasistenciasU():
+    if 'nombre' in session and session['privis'] == 1:
+        return render_template('listarasistenciasU.html')
+    else:
+        flash('No tiene permisos!', 'alert-danger')
+        return redirect(url_for('Rusuario'))
+
+@app.route('/MlistarasistenciasU', methods=['POST'])
+def MlistarasistenciasU():
+    if 'nombre' in session and session['privis'] == 1:
+        if request.method == 'POST':
+            fechainicio = request.form['txtfechainicio']
+
+
+            cur = mysql.connection.cursor()
+            horaminimo = '00:00'
+            format = '%H:%M'
+            horaminimoform = datetime.strptime(horaminimo, format)
+
+            date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+
+            # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+            unlist = ()
+            cantidad = 0
+            statico = 0
+
+            for i in range(7):
+                for n in range(24):
+                    for h in range(60):
+
+                        tiempoabuscar = horaminimoform+timedelta(hours=n,minutes=h)
+
+                        fechaensuma = date_time_obj + timedelta(days=i)
+
+                        query = ("SELECT culto.idCulto, culto.fecha, culto.horainicio, culto.horafinal, culto.capacidad, culto.capacidadmax, culto.piso FROM culto " +
+                        "INNER JOIN reserva ON culto.idCulto = reserva.idCulto INNER JOIN usuarios on usuarios.idUsuario = reserva.IdUsuario  WHERE  culto.fecha=" + "'" + str(fechaensuma.date()) +
+                        "' " + " AND culto.horainicio="+ "'"+ str(tiempoabuscar.time()) +"'" + "ORDER BY fecha, horainicio")
+                        encontro = cur.execute(query)
+
+
+                        if(encontro != 0 ):
+                            unlist +=  cur.fetchone()
+                            cantidad +=1
+
+
+            return render_template('infoasistenciasU.html', cantidad=cantidad, unlist=unlist)
+        else:
+            flash('Solicitud no aceptada!', 'alert-danger')
+            return redirect(url_for('Rusuario'))
+    else:
+        flash('No tiene permisos!', 'alert-danger')
+        return redirect(url_for('Rusuario'))
+
+@app.route('/eliminarasistenciaU', methods=['POST'])
+def eliminarasistenciaU():
+    if 'nombre' in session and session['privis'] == 1:
+        if request.method == 'POST':
+
+            cur = mysql.connection.cursor()
+            query = ("select idUsuario from usuarios where cedula="+ str(session['cedula']))
+            resultado = cur.execute(query)
+
+            if resultado !=0:
+                idusuario = cur.fetchone()
+                idculto = request.form['txtid']
+                query1 = ("DELETE from reserva  WHERE idCulto=" + str(idculto)  + " and idUsuario =" + str(idusuario[0]))
+                cur.execute(query1)
+                query2 = ("select capacidad from culto where idCulto=" + str(idculto))
+                cur.execute(query2)
+                capacidad = cur.fetchone()
+
+                query3 = ("update culto set capacidad=" + str(capacidad[0]-1) + " where idCulto=" + str(idculto))
+                cur.execute(query3)
+
+                mysql.connection.commit()
+
+                flash('Eliminacion realizada con exito!', 'alert-success')
+                return redirect(url_for('Rusuario'))
+            else:
+                flash('No existe el usuario!', 'alert-danger')
+                return redirect(url_for('Rusuario'))
+        else:
+            flash('Solicitud no aceptada!', 'alert-danger')
+            return redirect(url_for('Rusuario'))
+    else:
+        flash('No tiene permisos!', 'alert-danger')
+        return redirect(url_for('Rusuario'))
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True) #En modo de prueba, para que se reinicie solo

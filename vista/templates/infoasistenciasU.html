@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Listar cultos</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/StyleforSchedule.css" />
+
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid bg-1 text-center">
+
+
+<h2>Seleccione la asistencia que desea eliminar</h2>
+                <div class="table-responsive">
+                  <form id="registraU" action="/eliminarasistenciaU" method="POST" role="form">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr class="bg-light-gray">
+
+
+                                <th class="text-uppercase">Hora</th>
+
+                                <th class="text-uppercase">Detalles</th>
+                                <th class="text-uppercase">Seleccion</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                          <!-- Usamos jinja.  Como la estructura de la base de datos viene por 6 campos, hacemos un list -->
+                          <!-- donde esten los numeros desde 0 luego 0+6 y asi sucesivamente, hasta llegar a 7 dias, ya que solo se  -->
+                          <!-- mostrara los compromisos de cada 7 dias desde la fecha solicitada -->
+
+                          {%set list= [0,7,14,21,28,35,42]%}
+
+                          <!-- Revisamos si el numero de la lista esta en el index que creamos, de 0 a 42 y filtramos los resultados -->
+                          <!-- para que solo nos muestre la cantidad de compromisos que la consulta a la base de datos nos arrojo -->
+                          <!-- para evitar crear espacios en la tabla html vacios -->
+
+                          {% for elemento in list if list.index(elemento) < cantidad : %}
+
+
+                            <tr>
+
+
+
+
+                                <td class="align-middle"><p style="vertical-align: middle;" class="P-Fix" >{{unlist[elemento+2]}} - {{unlist[elemento+3]}}<p></td>
+
+
+                                <td>
+                                  <div class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom ">
+                                    <span class="text-white font-size20 ">Capacidad: {{unlist[elemento+4]}} de {{unlist[elemento+5]}}</span>
+                                    <br>
+                                    <span class="text-white font-size20 ">Piso: {{unlist[elemento+6]}}</span>
+                                    <br>
+                                    <span class="text-white font-size20 ">Fecha: {{unlist[elemento+1]}}</span>
+                                    </div>
+                                </td>
+
+                                <td><input class="form-check-input" type="radio" id="txtid" name="txtid" value='{{unlist[elemento]}}'><td>
+
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                    <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+                      <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+                    <button type="submit" class="btn btn-primary btn-block">Eliminar</button>
+                    </div>
+                    </div>
+                    </form>
+
+
+
+                    <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+                    <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+                      <a href="/usuario" class="btn btn-success btn-block ">Regresar</a>
+                    </div>
+                  </div>
+
+
+            </div>
+
+            <footer class="container-fluid bg-4 text-center">
+              <p>Copyright © 2020. All Rights Reserved</p>
+            </footer>
+
+            {% endblock %}
