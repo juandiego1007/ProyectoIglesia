@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Buscando Usuario</title>
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid bg-1 text-center">
+  <div class="row">
+
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form id="registraU" action="/MterminarmodificacionUser" method="POST" role="form">
+            <legend class="text-center">Modifique unicamente los datos que desa cambiar</legend>
+            <legend class="text-center">Modificar Usuario</legend>
+
+            <div class="form-group">
+              <label for="cargo" class="text-left">Cargo</label>
+              <input type="text" name="txt0" class="form-control" id="cargo" value="{{resultado[0]}}">
+            </div>
+
+            <div class="form-group">
+              <label for="celular" class="text-left">Celular</label>
+              <input type="tel" name="txt1" class="form-control" id="celular" value="{{resultado[1]}}">
+            </div>
+
+            <div class="form-group">
+              <label for="comite" class="text-left">Comite</label>
+              <input type="text" name="txt2" class="form-control" id="comite" value="{{resultado[2]}}" >
+            </div>
+
+            <div class="form-group">
+              <label for="correo">Correo</label>
+              <input type="email" class="form-control" id="correo" name="txt3" value="{{resultado[3]}}">
+            </div>
+
+            <div class="form-group">
+              <label for="direccion" class="text-left">Direccion</label>
+              <input type="text" name="txt4" class="form-control" id="direccion" value="{{resultado[4]}}">
+            </div>
+
+            <div class="form-group">
+              <label for="eps" class="text-left">Eps:</label>
+              <input type="text" name="txt5" class="form-control" id="eps" value="{{resultado[5]}}">
+            </div>
+
+            <div class="form-group">
+              <label for="tipoEstadoCivil" class="text-left">Estado Civil</label>
+              <select name="txt6" id="tipoEstadoCivil" class="form-control">
+                    <option selected>{{resultado[6]}}</option>
+                    <option> Soltero/a </option>
+                    <option> Casado/a </option>
+                    <option> Unión libre o unión de hecho </option>
+                    <option> Separado/a </option>
+                    <option> Divorciado/a </option>
+                    <option> Viudo/a </option>
+              </select>
+            </div>
+
+            <div id="hb" class="form-group">
+              <label for="fechaBautizmo" class="text-left">Fecha de Bautizo</label>
+              <input type="date" name="txt7" class="form-control" id="fechaBautizo" value="{{resultado[7]}}">
+            </div>
+
+            <div class="form-group">
+              <label for="llenoSantoEs" class="text-left">¿Lleno del Espíritu Santo?</label>
+              <select name="txt8" id="llenoSanto" class="form-control">
+                    <option selected>{{resultado[8]}}</option>
+                    <option value="si">Si</option>
+                    <option value="no">No</option>
+              </select>
+            </div>
+
+            <div id="hb" class="form-group">
+              <label for="nombre" class="text-left">Nombre Pastor que lo Bautizó</label>
+              <input type="text" name="txt9" class="form-control" id="pastorBautizo" value="{{resultado[9]}}">
+            </div>
+
+
+            <div class="form-group">
+              <label for="servidorEs" class="text-left">¿Es servidor local?</label>
+              <select name="txt10" id="servidorLocal" class="form-control">
+                    <option selected>{{resultado[10]}}</option>
+                    <option value="si">Si</option>
+                    <option value="no">No</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="tipoAsistente" class="text-left">Tipo Asistente</label>
+              <select name="txt11" id="tipoAsistente" class="form-control">
+                    <option selected>{{resultado[11]}}</option>
+                    <option value="as"> Amigo Simpatizante</option>
+                    <option value="hb"> Hermano Bautizado</option>
+              </select>
+            </div>
+            <input type="hidden" value="{{id}}" name="txtid" id="id">
+
+            <button type="submit" class="btn btn-primary btn-block">Registrar Modificacion</button>
+            <a href="/Rindex" class="btn btn-success btn-block">Regresar</a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+<p>Copyright © 2021. All Rights Reserved</p>
+</footer>
+
+{% endblock %}

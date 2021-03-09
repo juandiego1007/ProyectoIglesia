@@ -53,7 +53,7 @@ def Rindex():
 
     if 'nombre' in session and session['privis'] == 1 :
         return redirect(url_for('Rusuario'))
-    elif 'nombre' in session:
+    elif 'nombre' in session and session['privis'] == 2:
         return redirect(url_for('Rpastor'))
 
     else:
@@ -156,41 +156,50 @@ def Miniciosesion():
             password =  request.form['txtPassword']
 
             cur = mysql.connection.cursor()
-            cur.execute('select cedula, password, privilegio, nombre, apellido from usuarios where cedula='+cedula)
+            cur.execute('select cedula, password, privilegio, nombre, apellido from usuarios where cedula='+cedula+' LIMIT 1;')
             resultado = cur.fetchone()
             mysql.connection.commit()
+
+            print(resultado)
 
             if resultado != None:
 
                 passencodedDB = resultado[1].encode('utf-8')
                 passencodeHTML = password.encode('utf-8')
 
+                Parseprivilegio = int(resultado[2])
 
                 print(passencodedDB)
+                print(resultado[2])
 
+                try:
+                    if (bcrypt.checkpw(passencodeHTML,passencodedDB)):
+                        if Parseprivilegio == 2:
+                            session.permanent = True  # <--- makes the permanent session
+                            session['nombre'] = resultado[3] + resultado[4]
+                            session['privis'] = 2
+                            session['cedula'] = int(resultado[0])
 
-                if (bcrypt.checkpw(passencodeHTML,passencodedDB)):
-                    if(resultado[2]==2):
-                        session.permanent = True  # <--- makes the permanent session
-                        session['nombre'] = resultado[3] + resultado[4]
-                        session['privis'] = 2
-                        session['cedula'] = int(resultado[0])
+                            return redirect(url_for('Rpastor'))
+                        elif Parseprivilegio == 1 :
+                            session.permanent = True  # <--- makes the permanent session
+                            session['nombre'] = resultado[3] + resultado[4]
+                            session['privis'] = 1
+                            session['cedula'] = int(resultado[0])
 
-                        return redirect(url_for('Rpastor'))
-                    else:
-                        session.permanent = True  # <--- makes the permanent session
-                        session['nombre'] = resultado[3] + resultado[4]
-                        session['privis'] = 1
-                        session['cedula'] = int(resultado[0])
+                            return redirect(url_for('Rusuario'))
                         print(session)
-                        return redirect(url_for('Rusuario'))
 
-                    # registrar la session
-                    # return redirect(url_for(''))
+                        # registrar la session
+                        # return redirect(url_for(''))
 
 
-                else:
-                    flash('La contraseña o la cedula estan incorrectas', 'alert-danger')
+                    else:
+                        flash('La contraseña o la cedula estan incorrectas', 'alert-danger')
+                        return redirect(url_for('Rindex'))
+
+                except ValueError:
+                    flash('Error en la encriptacion','alert-danger')
                     return redirect(url_for('Rindex'))
 
             else:
@@ -305,7 +314,7 @@ def CrearcultoTemplate():
         return redirect(url_for('Rindex'))
 
 
-# recivimos los datos enviados para registrar el culto, ejecutamos la sentencia sql para registro y retornamos a la pagina principal
+# recibimos los datos enviados para registrar el culto, ejecutamos la sentencia sql para registro y retornamos a la pagina principal
 @app.route('/CrearcultoAction', methods=['POST'])
 def CrearcultoAction():
     if 'nombre' in session and session['privis'] == 2:
@@ -488,11 +497,14 @@ def Mmostrarusuario():
         if request.method == 'POST':
             cedulaobtenida = request.form['txtcedula']
             cur = mysql.connection.cursor()
-            existe = cur.execute('select * from usuarios where cedula=' + str(cedulaobtenida) )
+            existe = cur.execute('select nombre,apellido,tipoDocumento, cedula, edad, genero, tipoAsistente, correo, celular' +
+            ', direccion, estadoCivil, fechaBautizmo, pastorBautizo, llenoSanto, fecha, servidorLocal, comite, cargo, privilegio, idUsuario ' +
+            ' from usuarios where cedula=' + str(cedulaobtenida) )
             if existe != 0:
                 resultado = cur.fetchone()
+                print(resultado)
                 mysql.connection.commit()
-                return render_template('Rmostrandousuario', resultado=resultado)
+                return render_template('Rmostrandousuario.html', resultado=resultado)
             else:
                 flash('No existe el usuario solicitado!', 'alert-danger')
                 return redirect(url_for('Rindex'))
@@ -504,6 +516,70 @@ def Mmostrarusuario():
     else:
         flash('No tiene permisos suficientes!', 'alert-danger')
         return redirect(url_for('Rindex'))
+
+@app.route('/ModificarUser', methods=['POST'])
+def RmostraruserP():
+    if 'nombre' in session and session['privis'] == 2:
+        if request.method == 'POST':
+            id = request.form['txtidd']
+            print(id)
+            cur = mysql.connection.cursor()
+            print('select cargo, celular, comite, correo, direccion, epsSisben' +
+            ', estadoCivil, fechaBautizmo, llenoSanto, pastorBautizo, servidorLocal, tipoAsistente ' +
+            ' from usuarios where idUsuario=' + str(id))
+            existe = cur.execute('select cargo, celular, comite, correo, direccion, epsSisben' +
+            ', estadoCivil, fechaBautizmo, llenoSanto, pastorBautizo, servidorLocal, tipoAsistente ' +
+            ' from usuarios where idUsuario=' + str(id))
+            if existe !=0:
+                resultado = cur.fetchone()
+                mysql.connection.commit()
+
+                return render_template('Rmodificandousuario.html', resultado=resultado, id=id)
+
+            else:
+                flash('Usuario solicitado no existe!', 'alert-danger')
+                return redirect(url_for('Rpastor'))
+
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/MterminarmodificacionUser', methods=['POST'])
+def MterminarmodificacionUser():
+    if 'nombre' in session and session['privis'] == 2:
+        if request.method == 'POST':
+            lista = []
+            for i in range(12):
+                lista.append("'"+ str(request.form['txt'+str(i)]) + "'")
+
+
+            id = request.form['txtid']
+            cur = mysql.connection.cursor()
+            print(lista)
+
+            cur.execute('UPDATE  usuarios SET cargo={0}, celular={1}, comite={2}, correo={3}, direccion={4}, epsSisben={5}, estadoCivil={6}, fechaBautizmo={7}, llenoSanto={8}, pastorBautizo={9}, servidorLocal={10}, tipoAsistente={11}'.format(*lista)
+               + ' WHERE idUsuario='+ str(id) )
+
+
+
+            mysql.connection.commit()
+            flash('Usuario modificado con exito!', 'alert-success')
+            return redirect(url_for('Rpastor'))
+
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+
+
+
+
 
 @app.route('/Rmostrandousuario')
 def Rmostrandousuario():

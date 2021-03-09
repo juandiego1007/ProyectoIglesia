@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Buscando Usuario</title>
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid bg-1 text-center">
+  <div class="row">
+<table style="width:100%">
+  <tr>
+    <th>Nombre</th>
+    <th>Apellido</th>
+    <th>Tipo documento</th>
+    <th># de documento</th>
+    <th>Edad</th>
+    <th>Genero</th>
+    <th>Tipo de Asistente</th>
+    <th>Correo</th>
+    <th>Celular</th>
+    <th>Direccion</th>
+    <th>Estado Civil</th>
+    <th>Fecha Bautizo</th>
+    <th>Pator Bautizo</th>
+    <th>Esta lleno del Espiritu</th>
+    <th>Fecha</th>
+    <th>Servidor local</th>
+    <th>Comite</th>
+    <th>Cargo</th>
+    <th>Privilegio</th>
+  </tr>
+  <tr>
+    {% for elemento in resultado if resultado.index(elemento) < 19: %}
+    <td>{{elemento}}</td>
+    {%endfor%}
+  </tr>
+</table>
+<form id="registraU" action="/ModificarUser" method="POST" role="form">
+<input type="hidden" value="{{resultado[19]}}" name="txtidd">
+<div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+  <div class="container padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom">
+<button type="submit" class="btn btn-primary btn-block">Modificar</button>
+<a href="/pastor" class="btn btn-success btn-block">Regresar</a>
+</div>
+</div>
+</form>
+</div>
+
+
+
+</div>
+
+
+
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+  <p>Copyright © 2021. All Rights Reserved</p>
+</footer>
+
+{% endblock %}

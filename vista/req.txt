@@ -1,4 +1,3 @@
 falta:
-que el pastor pueda listar y modificar los usuarios
 que el pastor pueda CRUD de agendar citacion
 que el usuario pueda ver la informacion de las citaciones del pastor
