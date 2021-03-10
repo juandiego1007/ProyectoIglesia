@@ -229,7 +229,7 @@ def Mcerrarsesion():
 
 
 
-        # Metodos para el pastor
+        # Metodos para el pastor###############################################################################################################
 
 @app.route('/pastor')
 def Rpastor():
@@ -590,7 +590,165 @@ def Rmostrandousuario():
         return redirect(url_for('Rindex'))
 
 
-        # METODOS PARA EL USUARIO
+
+@app.route('/buscarusuariocita')
+def Rbuscarusuariocita():
+    if 'nombre' in session and session['privis'] == 2:
+        return render_template("buscarusuariocita.html")
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/Mbuscarusuariocita', methods=['POST'])
+def Mbuscarusuariocita():
+    if 'nombre' in session and session['privis'] == 2:
+        if request.method == 'POST':
+            cedulaobtenida = "'" + request.form['txtcedula'] + "'"
+            if cedulaobtenida != None:
+                cur = mysql.connection.cursor()
+                existe = cur.execute('select idUsuario,nombre, apellido, cedula from usuarios where cedula=' + cedulaobtenida)
+                if existe != 0:
+                    resultado = cur.fetchone()
+                    mysql.connection.commit()
+
+                    flash('Usuario encontrado con exito!', 'alert-success')
+                    return render_template('Rcrearconsulta.html',resultado=resultado)
+                else:
+                    flash('Usuario no encontrado!', 'alert-danger')
+                    return redirect(url_for('Rindex'))
+            else:
+                flash('Llene el campo de la cedula!', 'alert-danger')
+                return redirect(url_for('Mbuscarusuariocita'))
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+
+@app.route('/Mcrearconsulta', methods=['POST'])
+def Mcrearconsulta():
+    if 'nombre' in session and session['privis'] == 2:
+        if request.method == 'POST':
+
+            categoriaobtenida = "'" + request.form['txtcategoria'] + "'"
+            importanciaobtenida = "'" + request.form['txtimportancia'] + "'"
+            descripcionobtenida = "'" + request.form['txtdescripcion'] + "'"
+            idobtenido = request.form['txtidusuario']
+
+            today = str(date.today())
+            date_time_obj = ("'"+str(datetime.strptime(today, '%Y-%m-%d'))+"'")
+
+
+            cur = mysql.connection.cursor()
+            try:
+                cur.execute('INSERT INTO Consulta (idUsuario, categoria, descripcion, importancia, fecha) VALUES ('+ str(idobtenido)  +' ,' +str(categoriaobtenida)+' ,'+str(descripcionobtenida) +' ,'+ str(importanciaobtenida)+' ,'+ str(date_time_obj) +')')
+                mysql.connection.commit()
+                flash('Consulta registrada exitosamente!', 'alert-succesr')
+                return redirect(url_for('Rindex'))
+
+            except ValueError:
+                flash('Error. No se pudo registrar la consulta','alert-danger')
+                return redirect(url_for('Rindex'))
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/Rlistarconsultas')
+def Rlistarconsultas():
+    if 'nombre' in session and session['privis'] == 2:
+        return render_template("Rlistarconsultas.html")
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+@app.route('/Mlistarconsultas', methods=['POST'])
+def Mlistarconsultas():
+    if 'nombre' in session and 'privis' == 2:
+        if request.method == 'POST':
+            fechainicio = request.form['txtfechainicio']
+            cedulaobtenida = request.form['txtcedula']
+
+            cur = mysql.connection.cursor()
+
+            format = '%H:%M'
+
+
+            date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+
+            # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+            unlist = ()
+            cantidad = 0
+            statico = 0
+
+            for i in range(7):
+
+
+                fechaensuma = date_time_obj + timedelta(days=i)
+
+
+                encontro = cur.execute("select C.idConsulta,C.idUsuario, C.categoria, C.descripcion, C.importancia, C.fecha from Consulta as C INNER JOIN usuarios as U ON C.idUsuario = U.idUsuario WHERE c.fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND U.cedula ="+ str(cedulaobtenida) + "ORDER BY fecha")
+
+
+                if(encontro != 0 ):
+                    unlist +=  cur.fetchone()
+                    cantidad +=1
+
+
+            return render_template('Rlistadeconsultas.html', cantidad=cantidad, unlist=unlist)
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+
+    else:
+
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+
+@app.route('/modificarconsultaM', methods={'POST'})
+def modificarconsultaM():
+    if 'nombre' in session and 'privis' == 2:
+        if request.method == 'POST':
+            idobtenido = request.form['txtid']
+
+            cur = mysql.connection.cursor()
+            existe = cur.execute('select * from Consulta where idConsulta='+str(idobtenido))
+            if existe != 0:
+
+                resultado = cur.fetchone()
+                render_template('Rmodificarconsulta.html',resultado=resultado)
+            else:
+                flash('No se encontro consulta!', 'alert-danger')
+                return redirect(url_for('Rpastor'))
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rpastor'))
+
+    else:
+
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+@app.route('/Rmodificarconsulta')
+def Rmodificarconsulta():
+    if 'nombre' in session and session['privis'] == 2:
+        return render_template("Rmodificarconsulta.html")
+    else:
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rindex'))
+
+
+
+
+
+
+
+
+        # METODOS PARA EL USUARIO ###############################################################################################################
 
 
 @app.route('/usuario')

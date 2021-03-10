@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Busqueda de usuarios</title>
+
+
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid bg-1 text-left">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form id="registraU" action="/Mbuscarusuariocita" method="POST" role="form">
+            <legend class="text-center">Ingrese la cedula del usuario que desea consultar.</legend>
+
+            <div class="form-group">
+              <label for="fechainicio" class="text-left">Cedula del usuario</label>
+              <input type="text" name="txtcedula" class="form-control" id="txtcedula"  required placeholder="Ingresa la cedula">
+            </div>
+
+
+
+
+            <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+            <a href="/pastor" class="btn btn-success btn-block">Regresar</a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+  <p>Copyright © 2021. All Rights Reserved</p>
+</footer>
+
+{% endblock %}

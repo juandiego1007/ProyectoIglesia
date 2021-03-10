@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Registro de consulta</title>
+
+{% extends  "layout.html" %}
+
+{% block content %}
+
+<!-- First Container -->
+<div class="container-fluid bg-1 text-left">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+
+            <!-- Register form to flask -->
+          <form id="registrarconsulta" action="/Mcrearconsulta" method="POST" role="form">
+            <legend class="text-center">Registrar una consulta para: {{resultado[1]}}  {{resultado[2]}}</legend>
+
+            <div class="form-group">
+              <label for="categoria" class="text-left">Categoria:</label>
+              <select name="txtcategoria" id="categoria" class="form-control">
+                    <option selected>Seleccione</option>
+                    <option>Espiritual</option>
+                    <option>Familiar</option>
+                    <option>Pareja</option>
+                    <option>Sentimental</option>
+                    <option>Mental</option>
+                    <option>Economica</option>
+                    <option>Laboral</option>
+                    <option>Salud</option>
+                    <option>Proyecto de vida</option>
+                    <option>Servicio a Dios</option>
+                    <option>Otros</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="importancia" class="text-left">Importancia:</label>
+              <select name="txtimportancia" id="importancia" class="form-control">
+                    <option selected>Seleccione</option>
+                    <option>Alta</option>
+                    <option>Media</option>
+                    <option>Baja</option>
+              </select>
+            </div>
+
+
+            <div class="form-group">
+              <label for="descripcion" class="text-left">Descripcion:</label>
+              <br>
+              <textarea rows="7" cols="65" maxlength="2000" name="txtdescripcion" form="registrarconsulta">Escriba la descripcion aqui</textarea>
+            </div>
+
+            <input type="hidden" name="txtidusuario" value="{{resultado[0]}}">
+
+            <button type="submit" class="btn btn-primary btn-block">Registrar consulta</button>
+            <a href="/pastor" class="btn btn-success btn-block">Regresar</a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+  <p>Copyright © 2021. All Rights Reserved</p>
+</footer>
+
+{% endblock %}
