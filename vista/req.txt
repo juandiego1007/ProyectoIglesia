@@ -1,3 +1,2 @@
 falta:
-que el pastor pueda CRUD de agendar citacion - terminar la modificacion eliminacion
 que el usuario pueda ver la informacion de las citaciones del pastor

@@ -50,7 +50,7 @@
             <div class="form-group">
               <label for="tipoEstadoCivil" class="text-left">Estado Civil</label>
               <select name="txt6" id="tipoEstadoCivil" class="form-control">
-                    <option selected>{{resultado[6]}}</option>
+                    <option selected >{{resultado[6]}}</option>
                     <option> Soltero/a </option>
                     <option> Casado/a </option>
                     <option> Unión libre o unión de hecho </option>
@@ -68,7 +68,7 @@
             <div class="form-group">
               <label for="llenoSantoEs" class="text-left">¿Lleno del Espíritu Santo?</label>
               <select name="txt8" id="llenoSanto" class="form-control">
-                    <option selected>{{resultado[8]}}</option>
+                    <option selected value="{{resultado[8]}}">{{resultado[8]}}</option>
                     <option value="si">Si</option>
                     <option value="no">No</option>
               </select>
@@ -83,7 +83,7 @@
             <div class="form-group">
               <label for="servidorEs" class="text-left">¿Es servidor local?</label>
               <select name="txt10" id="servidorLocal" class="form-control">
-                    <option selected>{{resultado[10]}}</option>
+                    <option selected value="{{resultado[10]}}">{{resultado[10]}}</option>
                     <option value="si">Si</option>
                     <option value="no">No</option>
               </select>
@@ -92,9 +92,9 @@
             <div class="form-group">
               <label for="tipoAsistente" class="text-left">Tipo Asistente</label>
               <select name="txt11" id="tipoAsistente" class="form-control">
-                    <option selected>{{resultado[11]}}</option>
-                    <option value="as"> Amigo Simpatizante</option>
-                    <option value="hb"> Hermano Bautizado</option>
+                    <option selected value="{{resultado[11]}}">{{resultado[11]}}</option>
+                    <option value="Amigo Simpatizante"> Amigo Simpatizante</option>
+                    <option value="Hermano Bautizado"> Hermano Bautizado</option>
               </select>
             </div>
             <input type="hidden" value="{{id}}" name="txtid" id="id">
