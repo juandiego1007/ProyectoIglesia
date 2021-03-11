@@ -1,2 +1,2 @@
 falta:
-que el usuario pueda ver la informacion de las citaciones del pastor
+

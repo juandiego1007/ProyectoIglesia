@@ -1051,6 +1051,66 @@ def eliminarasistenciaU():
         flash('No tiene permisos!', 'alert-danger')
         return redirect(url_for('Rusuario'))
 
+@app.route('/RlistarconsultasU')
+def RlistarconsultasU():
+    if 'nombre' in session and session['privis'] == 1:
+        return render_template('RlistarconsultasU.html')
+    else:
+        flash('No tiene permisos!', 'alert-danger')
+        return redirect(url_for('Rusuario'))
+
+@app.route('/MlistarconsultasU', methods=['POST'])
+def MlistarconsultasU():
+    if 'nombre' in session and session['privis'] == 1:
+        if request.method == 'POST':
+            fechainicio = request.form['txtfechainicio']
+
+
+            cur = mysql.connection.cursor()
+
+
+            date_time_obj = datetime.strptime(fechainicio, '%Y-%m-%d')
+
+            # fechaconformato =  datetime.date(fechainicio[0:4],fechainicio[5:7],fechainicio[8:10])
+            unlist = ()
+            cantidad = 0
+            statico = 0
+            cedulaobtenida = "'"+str(session['cedula']) + "'"
+            # hacemos que la fecha actual aumente 7 dias
+            for i in range(7):
+
+
+                fechaensuma = date_time_obj + timedelta(days=i)
+
+
+                encontro = cur.execute("select C.idConsulta,C.idUsuario, C.categoria, C.descripcion, C.importancia, C.fecha from Consulta as C INNER JOIN usuarios as U ON C.idUsuario = U.idUsuario WHERE C.fecha=" + "'" + str(fechaensuma.date()) + "' " + " AND U.cedula ="+ str(cedulaobtenida) + " ORDER BY C.fecha")
+
+                print(encontro)
+                if(encontro != 0 ):
+                    unlist +=  cur.fetchone()
+                    cantidad +=1
+
+            print(unlist)
+            if cantidad>0:
+                return render_template('RlistadeconsultasU.html', cantidad=cantidad, unlist=unlist)
+            else:
+                flash('No se encontraron resultados!', 'alert-danger')
+                return redirect(url_for('Rusuario'))
+
+
+
+        else:
+            flash('Accion no permitida!', 'alert-danger')
+            return redirect(url_for('Rusuario'))
+
+    else:
+
+        flash('No tiene permisos suficientes!', 'alert-danger')
+        return redirect(url_for('Rusuario'))
+
+
+
+
 
 
 
